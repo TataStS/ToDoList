@@ -39,12 +39,6 @@ function renderTask(doc){
     })
 }
 
-//getting data
-// db.collection("tasks").orderBy('date').get().then((obj) => {
-//     obj.docs.forEach(doc => {
-//         renderTask(doc);
-//     })
-// })
 
 // saving data
 form.addEventListener('submit', (e) => {
@@ -61,7 +55,6 @@ form.addEventListener('submit', (e) => {
     form.date.value = '';
     form.description.value = '';
 });
-
 
 
 // real-time saver
