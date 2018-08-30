@@ -1,0 +1,99 @@
+html {
+    background-color: #6A94CC;
+    font-family: PTSans, Arial, sans-serif;
+    font-size: 16px;
+    font-style: normal;
+}
+
+main {
+    display: block;
+    max-width: 900px;
+    margin: 50px auto;
+    background-color: #a7cece;
+    border: 2px solid black;
+
+
+
+}
+.head {
+    display: block;
+    position: center;
+    background-color: #a7cece;
+    border-bottom: none;
+}
+.form {
+    display: block;
+    width: 80%;
+    height: auto;
+    margin: 15px auto;
+    border: 2px solid white;
+    /*border-top: none;*/
+}
+
+.form-list {
+    background-color:  #6A94CC;
+}
+
+.head img {
+    display: inline;
+    padding-left: 270px;
+    padding-top: 10px;
+
+}
+.head h1 {
+    display: inline;
+    padding-left: 10px;
+    font-size: 3.5em;
+}
+.form-list input {
+    /*float: left;*/
+    display: block;
+    width: 70%;
+    margin-left: 95px;
+    box-sizing: border-box;
+    font-size: 18px;
+}
+
+.form-list textarea {
+    display: block;
+    width: 70%;
+    margin-left: 95px;
+    box-sizing: border-box;
+    font-size: 18px;
+}
+
+.form-list button {
+    display: block;
+    width: 70%;
+    margin-left: 95px;
+    box-sizing: border-box;
+    font-size: 25px;
+}
+.form-list:after {
+    content: '';
+    clear: both;
+    display: block;
+}
+.out {
+    display: block;
+    width: 80%;
+    height: auto;
+    margin: 15px auto;
+    border: 2px solid white;
+}
+
+ul {
+    list-style: none;
+}
+ul li{
+    padding: 20px;
+    background: #f6f6f6;
+    font-size: 20px;
+    color: #555;
+    position: relative;
+    border-bottom: 1px solid dimgrey;
+    height: auto;
+}
+li span{
+    display: block;
+}
