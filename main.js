@@ -1,25 +1,25 @@
 const tasksList = document.getElementById('tasks-list');
 const form = document.getElementById('add-tasks-form');
+const myModal = document.getElementById('myModal');
 
-//create element and render task
+function renderTask(doc) {
 
-function renderTask(doc){
     let li = document.createElement('li');
     let name = document.createElement('span');
     let date = document.createElement('span');
     let description = document.createElement('span');
     let cross = document.createElement('button');
     let edit = document.createElement('button');
-
-
     li.setAttribute('data-id', doc.id);
     name.textContent = 'WHAT: ' + doc.data().name;
-    date.textContent = 'WHEN: ' + doc.data().date;
+    let docDate = doc.data().date;
+    date.textContent = 'WHEN: ' + docDate;
     description.textContent = 'ABOUT: ' + doc.data().description;
     cross.textContent = 'DELETE';
     edit.textContent = 'EDIT';
     edit.setAttribute('id', 'edit');
     cross.setAttribute('id', 'del');
+
 
 
     li.appendChild(name);
@@ -30,14 +30,51 @@ function renderTask(doc){
 
     tasksList.appendChild(li);
 
+    edit.onclick = function (e) {
+        myModal.style.display = 'block';
+        let editName = document.getElementById('edit-text');
+        let editDate = document.getElementById('edit-date');
+
+        let editDescription = document.getElementById('edit-description');
+        let editLocation = document.getElementById('edit-location');
+
+        editName.value = e.target.parentElement.children[0].innerText;
+        let time = e.target.parentElement.children[1].innerText;
+
+        editDate.value = time.replace("WHEN: ", "");
+        editDescription.value = e.target.parentElement.children[2].innerText;
+        editLocation.value = e.target.parentElement.children[3].innerText;
+    };
+
+
+
+
     //deleting data
 
-    cross.addEventListener('click',(e)=>{
+    cross.addEventListener('click', (e) => {
         e.stopPropagation();
         let id = e.target.parentElement.getAttribute('data-id');
         db.collection('tasks').doc(id).delete();
-    })
+    });
+
+    // editing data
+
+    const editBtn = document.getElementById('edit');
+    editBtn.addEventListener('click', (e) => {
+        myModal.style.display = 'block';
+
+        let editName = document.getElementById('edit-text');
+        let editDate = document.getElementById('edit-date');
+        let editDescription = document.getElementById('edit-description');
+        let editLocation = document.getElementById('edit-location');
+    });
 }
+
+window.onclick = function (event) {
+    if (event.target == myModal) {
+        myModal.style.display = 'none';
+    }
+};
 
 // saving data
 form.addEventListener('submit', (e) => {
@@ -53,18 +90,18 @@ form.addEventListener('submit', (e) => {
     form.description.value = '';
 });
 
-
 // real-time saver
 
 db.collection('tasks').orderBy('date').onSnapshot(snapshot => {
     let changes = snapshot.docChanges();
     changes.forEach(change => {
-        if(change.type == 'added'){
+        if (change.type == 'added') {
             renderTask(change.doc);
-        } else if (change.type  == 'removed'){
+        } else if (change.type == 'removed') {
             let li = tasksList.querySelector('[data-id=' + change.doc.id + ']');
             tasksList.removeChild(li);
         }
     })
 
 });
+
