@@ -32,6 +32,19 @@
     </div>
 </main>
 
+<div class="modal" id="myModal">
+    <div class="edit-formModal" id="edit-form">
+        <form class="form-list" id="edit-add-tasks-form"><br>
+            <input id="edit-text" required  type="text" name="name" placeholder="name"><br>
+            <input id="edit-date" type="datetime-local"  required  name="date"  placeholder="date"><br>
+            <textarea id="edit-description" name="description" placeholder="description"></textarea><br>
+            <input id="edit-location" type="text" name="location" placeholder="location"><br>
+            <button id="save">save</button>
+            <br>
+        </form>
+    </div>
+</div>
+
 <script>
     // Initialize Firebase
     var config = {
