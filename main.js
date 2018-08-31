@@ -39,14 +39,11 @@ function renderTask(doc){
     })
 }
 
-
 // saving data
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-
-    db.collection('tasks').add(
-        {
+    db.collection('tasks').add({
         name: form.name.value,
         date: form.date.value,
         description: form.description.value
