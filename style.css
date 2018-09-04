@@ -69,11 +69,11 @@ main {
     box-sizing: border-box;
     font-size: 25px;
 }
-.form-list:after {
-    content: '';
-    clear: both;
-    display: block;
-}
+/*.form-list:after {*/
+    /*content: '';*/
+    /*clear: both;*/
+    /*display: block;*/
+/*}*/
 .out {
     display: block;
     width: 80%;
