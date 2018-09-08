@@ -80,6 +80,7 @@ main {
     height: auto;
     margin: 15px auto;
     border: 2px solid white;
+
 }
 
 ul {
@@ -121,4 +122,29 @@ li #del {
     height: auto;
     margin: 35px auto;
     border: 2px solid white;
+}
+
+li button {
+    display: block;
+    float: right;
+    margin-top: -10px;
+}
+
+label {
+    display: block;
+    float: left;
+}
+
+label:after {
+    clear: both;
+}
+
+.selectList p {
+    display: inline-block;
+    font-family: PTSans, Arial, sans-serif;
+    color: #555;
+    margin-left: 100px;
+}
+.search {
+    margin: 0 35px;
 }
