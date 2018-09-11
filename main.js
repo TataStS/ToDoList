@@ -29,17 +29,19 @@ function renderTask(doc) {
     li.appendChild(cross);
 
     tasksList.appendChild(li);
+
     addListenerToEditTask ();
+    addEventListenerToDeleteTask();
 
 };
-// modal window
+// *************open edit modal window************************
     window.onclick = function (event) {
         if (event.target == myModal) {
             myModal.style.display = 'none';
         }
     };
 
-// saving data
+// ********************saving data***********************
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -53,25 +55,10 @@ function renderTask(doc) {
         form.description.value = '';
     });
 
-// real-time saver
-    db.collection('tasks').orderBy('date').onSnapshot(snapshot => {
-        let changes = snapshot.docChanges();
-        changes.forEach(change => {
-            console.log(change);
-            if (change.type == 'added') {
-                renderTask(change.doc);
-            } else if(change.type == 'modified'){
-                console.log("Modified task:087 ", change.doc.data());
-            } else if (change.type == 'removed') {
-                let li = tasksList.querySelector('[data-id=' + change.doc.id + ']');
-                tasksList.removeChild(li);
-            }
-        })
-    })
-
-
+// ****************************edit data and save a new one**********************
 function addListenerToEditTask () {
         $('#tasks-list').on('click', '#edit', function () {
+
             let savedID = $(this).parent();
             let valueEditName = $(this).parent().children().first();
             let valueEditDate = $(this).parent().children().eq(1);
@@ -91,15 +78,16 @@ function addListenerToEditTask () {
 
             $('#save').unbind('click');
             $('#save').click(function (e) {
-                // e.preventDefault();
-                console.log('hello')
                 e.preventDefault();
+                console.log('hello')
+                // e.preventDefault();
+                $('#myModal').hide();
                 valueEditName.text(editName.val());
                 console.log(valueEditName.text(editName.val()));
                 valueEditDate.text(editDate.val());
                 valueEditDescription.text(editDescription.val());
                 valueEditLocation.text(editLocation.val());
-
+                $('#myModal').hide();
                 let id = savedID.attr('data-id');
                 console.log(id);
                 db.collection('tasks').doc(id).update(
@@ -112,56 +100,25 @@ function addListenerToEditTask () {
             })
         })
 }
-//editing date
-// $('#tasks-list').on('click', '#edit', function (event) {
-//     // myModal.style.display = 'block';
-//     $('#myModal').show();
-//     // let id = e.target.parentElement.getAttribute('data-id');
-//     let id = $(event.target).parent().attr('data-id');
-//
-//
-//     console.log(id);
-//     console.log($(event.target).parent().children(1).text());
-//
-//
-//     let editName = document.getElementById('edit-text');// value from modal window for editing data
-//     $('#edit-text').val()
-//     let editDate = document.getElementById('edit-date');
-//     let editDescription = document.getElementById('edit-description');
-//     let editLocation = document.getElementById('edit-location');
-//     editName.value = event.target.parentElement.children[0].innerText;
-//
-//     let time = event.target.parentElement.children[1].innerText;
-//
-//     editDate.value = time.replace("WHEN: ", "");
-//     editDescription.value = event.target.parentElement.children[2].innerText;
-//     editLocation.value = event.target.parentElement.children[3].innerText;
-// });
 
+//*****************************deleting data*******************
+function addEventListenerToDeleteTask() {
+    $('#tasks-list').on('click', '#del', function (event) {
+        let id = $(event.target).parent().attr('data-id');
+        db.collection('tasks').doc(id).delete();
+    })
+}
 
-//deleting data
-$('#tasks-list').on('click', '#del', function (event) {
-    let id = $(event.target).parent().attr('data-id');
-    db.collection('tasks').doc(id).delete();
+// ***********************real-time saver**************
+db.collection('tasks').orderBy('date').onSnapshot(snapshot => {
+    let changes = snapshot.docChanges();
+    changes.forEach(change => {
+        console.log(change);
+        if (change.type == 'added') {
+            renderTask(change.doc);
+        } else if (change.type == 'removed') {
+            let li = tasksList.querySelector('[data-id=' + change.doc.id + ']');
+            tasksList.removeChild(li);
+        }
+    })
 })
-
-//send and save edit data
-// $('#save').on('click', function (e) {
-//     e.preventDefault();
-//     console.log(e)
-
-    // let id = $(event.target).parent().attr('data-id');
-    // db.collection('tasks').doc(id).update(
-    //         {
-    //             name: editName.value,
-    //             date: editDate.value,
-    //             description: editDescription.value
-    //         }
-    //     )
-// })
-
-// function saveEditDate() {
-//     $('#save').on('click', function () {
-//         console.log('hello')
-//     })
-// }
