@@ -35,11 +35,12 @@ function renderTask(doc) {
 
 };
 // *************open edit modal window************************
-    window.onclick = function (event) {
-        if (event.target == myModal) {
-            myModal.style.display = 'none';
-        }
-    };
+
+$(window).click(function (event) {
+    if (event.target == $('#myModal')){
+        $('#myModal').hide();
+    }
+});
 
 // ********************saving data***********************
     form.addEventListener('submit', (e) => {
