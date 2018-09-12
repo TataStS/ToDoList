@@ -3,37 +3,45 @@ const form = document.getElementById('add-tasks-form');
 const myModal = document.getElementById('myModal');
 
 function renderTask(doc) {
-
     let li = document.createElement('li');
     let name = document.createElement('span');
     let date = document.createElement('span');
     let description = document.createElement('span');
     let cross = document.createElement('button');
     let edit = document.createElement('button');
-
     li.setAttribute('data-id', doc.id);
     name.textContent = doc.data().name;
-
     date.textContent = doc.data().date;
     description.textContent = doc.data().description;
     cross.textContent = 'DELETE';
     edit.textContent = 'EDIT';
     edit.setAttribute('id', 'edit');
     cross.setAttribute('id', 'del');
-
     li.appendChild(name);
     li.appendChild(date);
     li.appendChild(description);
     li.appendChild(edit);
-
     li.appendChild(cross);
-
     tasksList.appendChild(li);
-
     addListenerToEditTask ();
     addEventListenerToDeleteTask();
-
 };
+
+function renderTask2 (doc){
+    let li = $('<li></li>').attr('data-id', doc.id);
+    let name = $('<span></span>').text(doc.data().name);
+    let date = $('<span></span>').text(doc.data().date)
+    let description = $('<span></span>').text(doc.data().description);
+    let location = $('<span></span>').text(doc.data().location);
+    let cross = $('<button></button>').text('delete').attr('id', 'del');
+    let edit = $('<button></button>').text('edit').attr('id', 'edit');
+    let done = $('<button></button>').text('done').attr('id', 'done')
+    li.append(name, date, date, description, location, cross, edit, done);
+    $('#tasks-list').append(li);
+    addListenerToEditTask ();
+    addEventListenerToDeleteTask();
+}
+
 // *************open edit modal window************************
 
 $(window).click(function (event) {
@@ -116,7 +124,7 @@ db.collection('tasks').orderBy('date').onSnapshot(snapshot => {
     changes.forEach(change => {
         console.log(change);
         if (change.type == 'added') {
-            renderTask(change.doc);
+            renderTask2(change.doc);
         } else if (change.type == 'removed') {
             let li = tasksList.querySelector('[data-id=' + change.doc.id + ']');
             tasksList.removeChild(li);
