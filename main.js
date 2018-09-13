@@ -101,6 +101,8 @@ db.collection('tasks').orderBy('name').onSnapshot(element => {
 })
 
 function docsFromFirebase(elements) {
+    $('#tasks-list').text('');
+
     elements.forEach(element => {
         console.log(element);
         if (element.type === 'added') {
