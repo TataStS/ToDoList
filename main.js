@@ -99,18 +99,18 @@ function addEventListenerToDeleteTask() {
 }
 
 // ***********************real-time saver**************
-db.collection('tasks').orderBy('date').onSnapshot(snapshot => {
-    let changes = snapshot.docChanges();
+db.collection('tasks').orderBy('name').onSnapshot(element => {
+    let changes = element.docChanges();
     docsFromFirebase(changes);
 })
 
-function docsFromFirebase(snapshots) {
-    snapshots.forEach(snapshot => {
-        console.log(snapshot);
-        if (snapshot.type === 'added') {
-            renderTask(snapshot.doc);
-        } else if (snapshot.type === 'removed') {
-            let li = tasksList.querySelector('[data-id=' + snapshot.doc.id + ']');
+function docsFromFirebase(elements) {
+    elements.forEach(element => {
+        console.log(element);
+        if (element.type === 'added') {
+            renderTask(element.doc);
+        } else if (element.type === 'removed') {
+            let li = tasksList.querySelector('[data-id=' + element.doc.id + ']');
             tasksList.removeChild(li);
         }
     })
@@ -124,5 +124,11 @@ function docsFromFirebase(snapshots) {
          done: true
      })
  })
+
+$("#selectTasks").on('change', function () {
+    let selectVal = $(this).val();
+    $('#tasks-list').text('');
+    docsFromFirebase(selectVal);
+})
 
 
