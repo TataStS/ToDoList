@@ -51,7 +51,6 @@ $('#tasks-list').on('click', '#edit', function () {
     let valueEditDate = $(this).parent().children().eq(1);
     let valueEditDescription = $(this).parent().children().eq(2);
     let valueEditLocation = $(this).parent().children().eq(3);
-    console.log(valueEditDate,valueEditDescription,valueEditLocation)
     $('#myModal').show();
     let editName = $('#edit-text');
     let editDate = $('#edit-date');
@@ -66,16 +65,14 @@ $('#tasks-list').on('click', '#edit', function () {
     $('#save').unbind('click');
     $('#save').click(function (e) {
         e.preventDefault();
-        console.log('hello')
+
         $('#myModal').hide();
+
         valueEditName.text(editName.val());
-        console.log(valueEditName.text(editName.val()));
         valueEditDate.text(editDate.val());
         valueEditDescription.text(editDescription.val());
         valueEditLocation.text(editLocation.val());
-        $('#myModal').hide();
         let id = savedID.attr('data-id');
-        console.log(id);
         db.collection('tasks').doc(id).update(
             {
                 name: valueEditName.text(),
@@ -83,6 +80,10 @@ $('#tasks-list').on('click', '#edit', function () {
                 description: valueEditDescription.text()
             }
         )
+        db.collection('tasks').orderBy('name').onSnapshot(element => {
+            let changes = element.docChanges();
+            docsFromFirebase(changes);
+        })
     })
 })
 
@@ -104,7 +105,6 @@ function docsFromFirebase(elements) {
     $('#tasks-list').text('');
 
     elements.forEach(element => {
-        console.log(element);
         if (element.type === 'added') {
             renderTask(element.doc);
         } else if (element.type === 'removed') {
