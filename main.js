@@ -2,44 +2,24 @@ const tasksList = document.getElementById('tasks-list');
 const form = document.getElementById('add-tasks-form');
 const myModal = document.getElementById('myModal');
 
-function renderTask(doc) {
-    let li = document.createElement('li');
-    let name = document.createElement('span');
-    let date = document.createElement('span');
-    let description = document.createElement('span');
-    let cross = document.createElement('button');
-    let edit = document.createElement('button');
-    li.setAttribute('data-id', doc.id);
-    name.textContent = doc.data().name;
-    date.textContent = doc.data().date;
-    description.textContent = doc.data().description;
-    cross.textContent = 'DELETE';
-    edit.textContent = 'EDIT';
-    edit.setAttribute('id', 'edit');
-    cross.setAttribute('id', 'del');
-    li.appendChild(name);
-    li.appendChild(date);
-    li.appendChild(description);
-    li.appendChild(edit);
-    li.appendChild(cross);
-    tasksList.appendChild(li);
-    addListenerToEditTask ();
-    addEventListenerToDeleteTask();
-};
-
-function renderTask2 (doc){
+function renderTask (doc){
     let li = $('<li></li>').attr('data-id', doc.id);
-    let name = $('<span></span>').text(doc.data().name);
-    let date = $('<span></span>').text(doc.data().date)
-    let description = $('<span></span>').text(doc.data().description);
-    let location = $('<span></span>').text(doc.data().location);
-    let cross = $('<button></button>').text('delete').attr('id', 'del');
-    let edit = $('<button></button>').text('edit').attr('id', 'edit');
-    let done = $('<button></button>').text('done').attr('id', 'done')
-    li.append(name, date, date, description, location, cross, edit, done);
+    let nameTask = $('<span></span>').text(doc.data().name);
+    let dateTask = $('<span></span>').text(doc.data().date)
+    let descriptionTask = $('<span></span>').text(doc.data().description);
+    let locationTask = $('<span></span>').text(doc.data().location);
+    let deleteButton = $('<button></button>').text('delete').attr('id', 'del');
+    let editButton = $('<button></button>').text('edit').attr('id', 'edit');
+    let doneButton = $('<button></button>').text('done').attr('id', 'done')
+    li.append(nameTask, dateTask, descriptionTask, locationTask, deleteButton, editButton, doneButton);
     $('#tasks-list').append(li);
+
     addListenerToEditTask ();
     addEventListenerToDeleteTask();
+
+        if(doc.data().done === true){
+            $('li').css("background-color", "#50C878");
+        }
 }
 
 // *************open edit modal window************************
@@ -57,7 +37,8 @@ $(window).click(function (event) {
         db.collection('tasks').add({
             name: form.name.value,
             date: form.date.value,
-            description: form.description.value
+            description: form.description.value,
+            done: false
         });
         form.name.value = '';
         form.date.value = '';
@@ -89,7 +70,6 @@ function addListenerToEditTask () {
             $('#save').click(function (e) {
                 e.preventDefault();
                 console.log('hello')
-                // e.preventDefault();
                 $('#myModal').hide();
                 valueEditName.text(editName.val());
                 console.log(valueEditName.text(editName.val()));
@@ -121,13 +101,28 @@ function addEventListenerToDeleteTask() {
 // ***********************real-time saver**************
 db.collection('tasks').orderBy('date').onSnapshot(snapshot => {
     let changes = snapshot.docChanges();
-    changes.forEach(change => {
-        console.log(change);
-        if (change.type == 'added') {
-            renderTask2(change.doc);
-        } else if (change.type == 'removed') {
-            let li = tasksList.querySelector('[data-id=' + change.doc.id + ']');
+    docsFromFirebase(changes);
+})
+
+function docsFromFirebase(snapshots) {
+    snapshots.forEach(snapshot => {
+        console.log(snapshot);
+        if (snapshot.type === 'added') {
+            renderTask(snapshot.doc);
+        } else if (snapshot.type === 'removed') {
+            let li = tasksList.querySelector('[data-id=' + snapshot.doc.id + ']');
             tasksList.removeChild(li);
         }
     })
-})
+}
+
+ $('#tasks-list').on('click', '#done', function (event) {
+     let li = $(event.target).parent();
+     let id = li.attr('data-id');
+     li.css("background-color", "#50C878");
+     db.collection('tasks').doc(id).update({
+         done: true
+     })
+ })
+
+
