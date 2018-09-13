@@ -126,9 +126,16 @@ function docsFromFirebase(elements) {
  })
 
 $("#selectTasks").on('change', function () {
-    let selectVal = $(this).val();
     $('#tasks-list').text('');
-    docsFromFirebase(selectVal);
-})
+    let selectVal = $(this).val();
+
+    db.collection('tasks')
+        .orderBy(selectVal)
+        .onSnapshot(element => {
+                let changes = element.docChanges();
+                docsFromFirebase(changes);
+        })
+    })
+
 
 
