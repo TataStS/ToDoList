@@ -14,8 +14,6 @@ function renderTask (doc){
     li.append(nameTask, dateTask, descriptionTask, locationTask, deleteButton, editButton, doneButton);
     $('#tasks-list').append(li);
 
-    addListenerToEditTask ();
-    addEventListenerToDeleteTask();
 
         if(doc.data().done === true){
             $('li').css("background-color", "#50C878");
@@ -46,57 +44,55 @@ $(window).click(function (event) {
     });
 
 // ****************************edit data and save a new one**********************
-function addListenerToEditTask () {
-        $('#tasks-list').on('click', '#edit', function () {
+$('#tasks-list').on('click', '#edit', function () {
 
-            let savedID = $(this).parent();
-            let valueEditName = $(this).parent().children().first();
-            let valueEditDate = $(this).parent().children().eq(1);
-            let valueEditDescription = $(this).parent().children().eq(2);
-            let valueEditLocation = $(this).parent().children().eq(3);
-            console.log(valueEditDate,valueEditDescription,valueEditLocation)
-            $('#myModal').show();
-            let editName = $('#edit-text');
-            let editDate = $('#edit-date');
-            let editDescription = $('#edit-description');
-            let editLocation = $('#edit-location');
+    let savedID = $(this).parent();
+    let valueEditName = $(this).parent().children().first();
+    let valueEditDate = $(this).parent().children().eq(1);
+    let valueEditDescription = $(this).parent().children().eq(2);
+    let valueEditLocation = $(this).parent().children().eq(3);
+    console.log(valueEditDate,valueEditDescription,valueEditLocation)
+    $('#myModal').show();
+    let editName = $('#edit-text');
+    let editDate = $('#edit-date');
+    let editDescription = $('#edit-description');
+    let editLocation = $('#edit-location');
 
-            editName.val(valueEditName.text());
-            editDate.val(valueEditDate.text());
-            editDescription.val(valueEditDescription.text());
-            editLocation.val(valueEditLocation.text());
+    editName.val(valueEditName.text());
+    editDate.val(valueEditDate.text());
+    editDescription.val(valueEditDescription.text());
+    editLocation.val(valueEditLocation.text());
 
-            $('#save').unbind('click');
-            $('#save').click(function (e) {
-                e.preventDefault();
-                console.log('hello')
-                $('#myModal').hide();
-                valueEditName.text(editName.val());
-                console.log(valueEditName.text(editName.val()));
-                valueEditDate.text(editDate.val());
-                valueEditDescription.text(editDescription.val());
-                valueEditLocation.text(editLocation.val());
-                $('#myModal').hide();
-                let id = savedID.attr('data-id');
-                console.log(id);
-                db.collection('tasks').doc(id).update(
-                    {
-                        name: valueEditName.text(),
-                        date: valueEditDate.text(),
-                        description: valueEditDescription.text()
-                    }
-                )
-            })
-        })
-}
+    $('#save').unbind('click');
+    $('#save').click(function (e) {
+        e.preventDefault();
+        console.log('hello')
+        $('#myModal').hide();
+        valueEditName.text(editName.val());
+        console.log(valueEditName.text(editName.val()));
+        valueEditDate.text(editDate.val());
+        valueEditDescription.text(editDescription.val());
+        valueEditLocation.text(editLocation.val());
+        $('#myModal').hide();
+        let id = savedID.attr('data-id');
+        console.log(id);
+        db.collection('tasks').doc(id).update(
+            {
+                name: valueEditName.text(),
+                date: valueEditDate.text(),
+                description: valueEditDescription.text()
+            }
+        )
+    })
+})
+
 
 //*****************************deleting data*******************
-function addEventListenerToDeleteTask() {
-    $('#tasks-list').on('click', '#del', function (event) {
-        let id = $(event.target).parent().attr('data-id');
-        db.collection('tasks').doc(id).delete();
-    })
-}
+
+$('#tasks-list').on('click', '#del', function (event) {
+    let id = $(event.target).parent().attr('data-id');
+    db.collection('tasks').doc(id).delete();
+})
 
 // ***********************real-time saver**************
 db.collection('tasks').orderBy('name').onSnapshot(element => {
@@ -114,16 +110,16 @@ function docsFromFirebase(elements) {
             tasksList.removeChild(li);
         }
     })
-}
 
- $('#tasks-list').on('click', '#done', function (event) {
-     let li = $(event.target).parent();
-     let id = li.attr('data-id');
-     li.css("background-color", "#50C878");
-     db.collection('tasks').doc(id).update({
-         done: true
-     })
- })
+
+$('#tasks-list').on('click', '#done', function (event) {
+    let li = $(event.target).parent();
+    let id = li.attr('data-id');
+    li.css("background-color", "#50C878");
+    db.collection('tasks').doc(id).update({
+        done: true
+    })
+})
 
 $("#selectTasks").on('change', function () {
     $('#tasks-list').text('');
@@ -132,10 +128,10 @@ $("#selectTasks").on('change', function () {
     db.collection('tasks')
         .orderBy(selectVal)
         .onSnapshot(element => {
-                let changes = element.docChanges();
-                docsFromFirebase(changes);
+            let changes = element.docChanges();
+            docsFromFirebase(changes);
         })
     })
 
 
-
+}
