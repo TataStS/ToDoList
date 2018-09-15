@@ -87,9 +87,15 @@ $('#tasks-list').on('click', '#edit', function () {
 //*****************************deleting data*******************
 
 $('#tasks-list').on('click', '#del', function (event) {
+    let li = $(event.target).parent();
     let id = $(event.target).parent().attr('data-id');
-    db.collection('tasks').doc(id).delete();
+    $(li).remove();
+    db.collection('tasks').doc(id).delete()
+
 });
+
+
+
 
 // ***********************                REAL-TIME SAVER               **************
 db.collection('tasks').orderBy('name').onSnapshot(elements => {
@@ -101,12 +107,7 @@ function docsFromFirebase(elements){
 
     elements.forEach(element => {
         if (element.type === 'added') {
-            renderTask(element.doc);
-        } else if (element.type === 'removed') {
-            let li = tasksList.querySelector('[data-id=' + element.doc.id + ']');
-            tasksList.removeChild(li);
-        }
-
+            renderTask(element.doc);}
     })
 }
 
