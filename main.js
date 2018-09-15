@@ -15,9 +15,9 @@ function renderTask (doc){
     $('#tasks-list').append(li);
 
 
-        if(doc.data().done === true){
-            $('li').css("background-color", "#50C878");
-        }
+    if(doc.data().done === true){
+        $(li).css("background-color", "#50C878");
+    }
 }
 
 // *************open edit modal window************************
@@ -80,12 +80,8 @@ $('#tasks-list').on('click', '#edit', function () {
                 description: valueEditDescription.text()
             }
         )
-        db.collection('tasks').orderBy('name').onSnapshot(element => {
-            let changes = element.docChanges();
-            docsFromFirebase(changes);
-        })
-    })
-})
+    });
+});
 
 
 //*****************************deleting data*******************
@@ -93,16 +89,15 @@ $('#tasks-list').on('click', '#edit', function () {
 $('#tasks-list').on('click', '#del', function (event) {
     let id = $(event.target).parent().attr('data-id');
     db.collection('tasks').doc(id).delete();
-})
+});
 
-// ***********************real-time saver**************
-db.collection('tasks').orderBy('name').onSnapshot(element => {
-    let changes = element.docChanges();
+// ***********************                REAL-TIME SAVER               **************
+db.collection('tasks').orderBy('name').onSnapshot(elements => {
+    let changes = elements.docChanges();
     docsFromFirebase(changes);
-})
+});
 
-function docsFromFirebase(elements) {
-    $('#tasks-list').text('');
+function docsFromFirebase(elements){
 
     elements.forEach(element => {
         if (element.type === 'added') {
@@ -111,20 +106,26 @@ function docsFromFirebase(elements) {
             let li = tasksList.querySelector('[data-id=' + element.doc.id + ']');
             tasksList.removeChild(li);
         }
+
     })
+}
 
-
+//*************** DONE TASKS *****************
 $('#tasks-list').on('click', '#done', function (event) {
-    let li = $(event.target).parent();
-    let id = li.attr('data-id');
-    li.css("background-color", "#50C878");
-    db.collection('tasks').doc(id).update({
-        done: true
-    })
-})
+        let li = $(event.target).parent();
+        let id = li.attr('data-id');
+        let liId = $(event.target).parent().attr('data-id');
+        $(li).css("background-color", "#50C878");
+        db.collection('tasks').doc(id).update({
+            done: true
+        });
+});
+
+
+// **************  SELECTING TASKS *****************
 
 $("#selectTasks").on('change', function () {
-    $('#tasks-list').text('');
+    tasksList.textContent = ('');
     let selectVal = $(this).val();
 
     db.collection('tasks')
@@ -133,7 +134,5 @@ $("#selectTasks").on('change', function () {
             let changes = element.docChanges();
             docsFromFirebase(changes);
         })
-    })
+});
 
-
-}
