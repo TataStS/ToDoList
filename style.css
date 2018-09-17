@@ -25,7 +25,7 @@ main {
     display: block;
     width: 80%;
     height: auto;
-    margin: 15px auto;
+    margin: 15px auto 0 auto;
     border: 2px solid white;
     /*border-top: none;*/
 }
@@ -49,23 +49,44 @@ main {
     /*float: left;*/
     display: block;
     width: 70%;
-    margin-left: 95px;
+    margin-left: 25px;
     box-sizing: border-box;
     font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.form-list img {
+    display: block;
+    float: right;
+    margin-right: 35px;
+    margin-top: -185px;
+}
+
+.mapHidden {
+    display: none;
+    background-color: #88236f;
+    width: 720px;
+    height: 220px;
+    margin: 0 auto;
+    border: 2px solid white;
+    border-top: none;
 }
 
 .form-list textarea {
     display: block;
     width: 70%;
-    margin-left: 95px;
+    margin-left: 25px;
     box-sizing: border-box;
     font-size: 18px;
 }
 
 .form-list button {
     display: block;
-    width: 70%;
-    margin-left: 95px;
+    float: right;
+    width: 25%;
+    margin-right: 5px;
+    /*margin-bottom: -25px;*/
+    margin-top: -55px;
     box-sizing: border-box;
     font-size: 25px;
 }
@@ -123,6 +144,11 @@ li #del {
     margin: 35px auto;
     border: 2px solid white;
 }
+.edit-formModal button {
+    margin-top: -15px;
+    width: auto;
+
+}
 
 li button {
     display: block;
@@ -148,3 +174,4 @@ label:after {
 .search {
     margin: 0 35px;
 }
+

@@ -19,18 +19,21 @@
             <input id="text" required  type="text" name="name" placeholder="name"><br>
             <input type="datetime-local" required  name="date" value="" placeholder="date"><br>
             <textarea name="description" placeholder="description"></textarea><br>
-            <input type="text" name="location" placeholder="location"><br>
+            <img src="images/map128.png" alt="map" id="mapImage">
             <button id="addTask">add new task</button>
-            <br>
         </form>
     </div>
+    <div class="mapHidden" id="map"></div>
     <hr>
+
     <div class="selectList">
         <p>Sort Tasks By:
             <select name="choozeTask" id="selectTasks">
                 <option value="description">Description</option>
                 <option value="name">Name</option>
                 <option value="date">Date</option>
+                <option value="done">Done</option>
+                <option value="tasks">All</option>
                 <!--<option id='alfa' value="Alphabet">Alphabet</option>-->
                 <!--<option value="Near Me">Near Me</option>-->
             </select>
