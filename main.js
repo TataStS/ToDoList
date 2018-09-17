@@ -36,7 +36,8 @@ $(window).click(function (event) {
             name: form.name.value,
             date: form.date.value,
             description: form.description.value,
-            done: false
+            done: false,
+            tasks: 'all'
         });
         form.name.value = '';
         form.date.value = '';
@@ -131,9 +132,38 @@ $("#selectTasks").on('change', function () {
 
     db.collection('tasks')
         .orderBy(selectVal)
-        .onSnapshot(element => {
-            let changes = element.docChanges();
+        .onSnapshot(elements => {
+            let changes = elements.docChanges();
             docsFromFirebase(changes);
         })
 });
+
+// ***************** SEARCH BY NAME *****************
+
+$('.search').on('input', function () {
+        $('#tasks-list').text('');
+        let serchName = $(this).val();
+        db.collection('tasks')
+            .get()
+            .then(elements => {
+                let elementsDocs = elements.docs;
+                console.log(elementsDocs);
+                elementsDocs.filter(function (item) {
+                    console.log(item);
+                    if(serchName === item.data().name){
+                        renderTask(item)
+                    }
+                })
+            })
+})
+
+
+$("#mapImage").click(function () {
+    $("#map").slideDown();
+});
+
+$("#map").click(function () {
+    $("#map").slideUp('fast');
+});
+
 
