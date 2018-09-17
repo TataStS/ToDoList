@@ -1,6 +1,7 @@
 const tasksList = document.getElementById('tasks-list');
 const form = document.getElementById('add-tasks-form');
 const myModal = document.getElementById('myModal');
+let dateNow = Date.now();
 
 function renderTask (doc){
     let li = $('<li></li>').attr('data-id', doc.id);
@@ -18,6 +19,12 @@ function renderTask (doc){
     if(doc.data().done === true){
         $(li).css("background-color", "#50C878");
     }
+
+    let b = Math.round(new Date(doc.data().date).getTime());
+    if (dateNow > +b){
+        $(li).css("background-color", "red")
+    }
+
 }
 
 // *************open edit modal window************************
@@ -156,7 +163,7 @@ $('.search').on('input', function () {
                 })
             })
     // $('.search').val('');
-})
+});
 
 //********************* SEARCH BY DATE ******************
 
@@ -174,9 +181,31 @@ $(".dateSearch").on('input', function () {
                     }
                 })
             })
-})
+});
 
 
+
+//*************** OVERDUE TASKS *************************
+// let dateNow = Date.now()
+// // let dateNow = new Date();
+// console.log(typeof dateNow)
+// console.log(dateNow)
+//
+// db.collection('tasks')
+//     .get()
+//     .then(elements => {
+//         let elementsDocs = elements.docs;
+//         elementsDocs.forEach(element => {
+//             let a = element.data().date;
+//             let timeFromFB = Math.round(new Date(a).getTime());
+//
+//             if (dateNow > +timeFromFB){
+//                 $('#tasks-list').children().css("background-color", "red")
+//             }
+//             console.log(a);
+//             console.log(timeFromFB);
+//         })
+//     });
 
 
 $("#mapImage").click(function () {
@@ -186,5 +215,8 @@ $("#mapImage").click(function () {
 $("#map").click(function () {
     $("#map").slideUp('fast');
 });
+
+
+
 
 
