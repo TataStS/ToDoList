@@ -23,7 +23,7 @@ function renderTask (doc){
 // *************open edit modal window************************
 
 $(window).click(function (event) {
-    if (event.target == $('#myModal')){
+    if (event.target === $('#myModal')){
         $('#myModal').hide();
     }
 });
@@ -155,7 +155,28 @@ $('.search').on('input', function () {
                     }
                 })
             })
+    // $('.search').val('');
 })
+
+//********************* SEARCH BY DATE ******************
+
+$(".dateSearch").on('input', function () {
+    $('#tasks-list').text('');
+    let searchDate = $(this).val();
+        db.collection('tasks')
+            .get()
+            .then(elements => {
+                let elementsDocs = elements.docs;
+                elementsDocs.filter(function (item) {
+                    console.log(item);
+                    if(searchDate == item.data().date){
+                        renderTask(item)
+                    }
+                })
+            })
+})
+
+
 
 
 $("#mapImage").click(function () {
