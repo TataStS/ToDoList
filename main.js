@@ -20,11 +20,12 @@ function renderTask (doc){
         $(li).css("background-color", "#50C878");
     }
 
-    let b = Math.round(new Date(doc.data().date).getTime());
-    if (dateNow > +b){
-        $(li).css("background-color", "red")
-    }
+    let timeFromFB = Math.round(new Date(doc.data().date).getTime());
+    if (dateNow > +timeFromFB){
+        $(li).css("background-color", "#DC3D2A");
+        // console.log($(li).attr())
 
+    }
 }
 
 // *************open edit modal window************************
@@ -136,13 +137,29 @@ $('#tasks-list').on('click', '#done', function (event) {
 $("#selectTasks").on('change', function () {
     tasksList.textContent = ('');
     let selectVal = $(this).val();
-
-    db.collection('tasks')
-        .orderBy(selectVal)
-        .onSnapshot(elements => {
-            let changes = elements.docChanges();
-            docsFromFirebase(changes);
-        })
+    if (selectVal === "overDue"){
+        db.collection('tasks')
+            .get()
+            .then(elements => {
+                let elementsDocs = elements.docs;
+                let dateNow = Date.now();
+                elementsDocs.filter(function (item) {
+                    let itemDate = Math.round(new Date(item.data().date).getTime());
+                    if(dateNow > itemDate){
+                        // console.log(Math.round(new Date(item.data().date).getTime());
+                        renderTask(item);
+                    }
+                })
+                }
+            )
+    } else {
+        db.collection('tasks')
+            .orderBy(selectVal)
+            .onSnapshot(elements => {
+                let changes = elements.docChanges();
+                docsFromFirebase(changes);
+            })
+    }
 });
 
 // ***************** SEARCH BY NAME *****************
@@ -182,31 +199,6 @@ $(".dateSearch").on('input', function () {
                 })
             })
 });
-
-
-
-//*************** OVERDUE TASKS *************************
-// let dateNow = Date.now()
-// // let dateNow = new Date();
-// console.log(typeof dateNow)
-// console.log(dateNow)
-//
-// db.collection('tasks')
-//     .get()
-//     .then(elements => {
-//         let elementsDocs = elements.docs;
-//         elementsDocs.forEach(element => {
-//             let a = element.data().date;
-//             let timeFromFB = Math.round(new Date(a).getTime());
-//
-//             if (dateNow > +timeFromFB){
-//                 $('#tasks-list').children().css("background-color", "red")
-//             }
-//             console.log(a);
-//             console.log(timeFromFB);
-//         })
-//     });
-
 
 $("#mapImage").click(function () {
     $("#map").slideDown();
