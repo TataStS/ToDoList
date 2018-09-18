@@ -21,6 +21,17 @@ main {
     background-color: #a7cece;
     border-bottom: none;
 }
+.head img {
+    display: inline;
+    padding-left: 270px;
+    padding-top: 10px;
+
+}
+.head h1 {
+    display: inline;
+    padding-left: 10px;
+    font-size: 3.5em;
+}
 .form {
     display: block;
     width: 80%;
@@ -34,17 +45,7 @@ main {
     background-color:  #6A94CC;
 }
 
-.head img {
-    display: inline;
-    padding-left: 270px;
-    padding-top: 10px;
 
-}
-.head h1 {
-    display: inline;
-    padding-left: 10px;
-    font-size: 3.5em;
-}
 .form-list input {
     /*float: left;*/
     display: block;
@@ -62,24 +63,6 @@ main {
     margin-top: -185px;
 }
 
-.mapHidden {
-    display: none;
-    background-color: #88236f;
-    width: 720px;
-    height: 220px;
-    margin: 0 auto;
-    border: 2px solid white;
-    border-top: none;
-}
-
-.form-list textarea {
-    display: block;
-    width: 70%;
-    margin-left: 25px;
-    box-sizing: border-box;
-    font-size: 18px;
-}
-
 .form-list button {
     display: block;
     float: right;
@@ -90,11 +73,23 @@ main {
     box-sizing: border-box;
     font-size: 25px;
 }
-/*.form-list:after {*/
-    /*content: '';*/
-    /*clear: both;*/
-    /*display: block;*/
-/*}*/
+.form-list textarea {
+    display: block;
+    width: 70%;
+    margin-left: 25px;
+    box-sizing: border-box;
+    font-size: 18px;
+}
+.mapHidden {
+    display: none;
+    background-color: #88236f;
+    width: 720px;
+    height: 220px;
+    margin: 0 auto;
+    border: 2px solid white;
+    border-top: none;
+}
+
 .out {
     display: block;
     width: 80%;
@@ -139,15 +134,43 @@ li #del {
 
 .edit-formModal {
     display: block;
-    width: 50%;
+    width: 30%;
     height: auto;
     margin: 35px auto;
     border: 2px solid white;
 }
-.edit-formModal button {
-    margin-top: -15px;
-    width: auto;
 
+.edit-formModal input {
+    /*float: left;*/
+    display: block;
+    width: 70%;
+    margin-left: 25px;
+    box-sizing: border-box;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.edit-formModal textarea {
+    display: block;
+    width: 70%;
+    margin-left: 25px;
+    box-sizing: border-box;
+    font-size: 18px;
+}
+.edit-formModal button {
+    display: block;
+    float: right;
+    margin-top: -55px;
+    margin-right: 30px;
+    width: auto;
+}
+
+.edit-formModal img {
+    display: block;
+    float: right;
+    margin-button: 15px;
+    /*margin-left: 40px;*/
+    margin-right: -5px;
 }
 
 li button {
