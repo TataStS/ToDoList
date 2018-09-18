@@ -23,7 +23,9 @@ function renderTask (doc){
     let timeFromFB = Math.round(new Date(doc.data().date).getTime());
     if (dateNow > +timeFromFB){
         $(li).css("background-color", "#DC3D2A");
-        // console.log($(li).attr())
+
+
+        // initMap();
 
     }
 }
@@ -202,11 +204,21 @@ $(".dateSearch").on('input', function () {
 
 $("#mapImage").click(function () {
     $("#map").slideDown();
+    initMap();
 });
 
 $("#map").click(function () {
     $("#map").slideUp('fast');
 });
+
+//******************** LOAD MAP *****************
+var map;
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 49.85, lng: 24.01},
+        zoom: 14
+    });
+};
 
 
 
