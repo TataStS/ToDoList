@@ -14,11 +14,13 @@
         <img id="logo" src="images/clock.png" alt="clock">
         <h1>To Do List</h1>
     </div>
+    <div id="testOt"></div>
     <div class="form">
         <form class="form-list" id="add-tasks-form"><br>
             <input id="text" required  type="text" name="name" placeholder="name"><br>
             <input type="datetime-local" required  name="date" value="2018-09-24T20:36:00" step="1" placeholder="date"><br>
             <textarea name="description" placeholder="description"></textarea><br>
+            <input type="text" name="location" placeholder="location"><br>
             <img src="images/map128.png" alt="map" id="mapImage">
             <button id="addTask">add new task</button>
         </form>
@@ -80,6 +82,7 @@
 </script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
 <script type="text/javascript" src="main.js"></script>
-
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDo1SK2PiSK-OtAYI7wQY6yWfKPsw8VGVY&callback=initMap"
+    async defer></script>
 </body>
 </html>

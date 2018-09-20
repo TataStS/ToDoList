@@ -82,9 +82,9 @@ main {
 }
 .mapHidden {
     display: none;
-    background-color: #88236f;
+    /*background-color: #88236f;*/
     width: 720px;
-    height: 220px;
+    height: 250px;
     margin: 0 auto;
     border: 2px solid white;
     border-top: none;

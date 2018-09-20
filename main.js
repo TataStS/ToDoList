@@ -23,10 +23,6 @@ function renderTask (doc){
     let timeFromFB = Math.round(new Date(doc.data().date).getTime());
     if (dateNow > +timeFromFB){
         $(li).css("background-color", "#DC3D2A");
-
-
-        // initMap();
-
     }
 }
 
@@ -46,12 +42,14 @@ $(window).click(function (event) {
             name: form.name.value,
             date: form.date.value,
             description: form.description.value,
+            location: form.location.value,
             done: false,
             tasks: 'all'
         });
         form.name.value = '';
         form.date.value = '';
         form.description.value = '';
+        form.location.value = '';
     });
 
 // ****************************edit data and save a new one**********************
@@ -104,9 +102,6 @@ $('#tasks-list').on('click', '#del', function (event) {
     db.collection('tasks').doc(id).delete()
 
 });
-
-
-
 
 // ***********************                REAL-TIME SAVER               **************
 db.collection('tasks').orderBy('name').onSnapshot(elements => {
@@ -203,24 +198,68 @@ $(".dateSearch").on('input', function () {
 });
 
 $("#mapImage").click(function () {
-    $("#map").slideDown();
-    initMap();
+    $("#map").slideToggle();
+    // initMap();
 });
 
-$("#map").click(function () {
-    $("#map").slideUp('fast');
-});
+
 
 //******************** LOAD MAP *****************
-var map;
+// var map;
+// function initMap() {
+//     map = new google.maps.Map(document.getElementById('map'), {
+//         center: {lat: 49.84, lng: 24.02},
+//         zoom: 12
+//     });
+// };
+
+
+
+var options = {
+    center: {lat: 49.84, lng: 24.02},
+    zoom: 12
+};
+var markerOptions = {
+    position: {lat: 49.79, lng: 24.06},
+    map: myMap
+};
+var myMap;
+var marker;
+// ******************   new map *************
 function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 49.85, lng: 24.01},
-        zoom: 14
-    });
+    myMap = new google.maps.Map(document.getElementById('map'), options);
+
+    // *********** GETTING COORDS BY CLICK ON MAP *********
+
+    google.maps.event.addListener(myMap, 'click', function(event) {
+        // var a = $('#add-tasks-form').find('input[name="location"]');
+
+        console.log(event);
+        // var myLatLng = event.latLng;
+        var lat = event.latLng.lat();
+        var lng = event.latLng.lng();
+        console.log(lat,lng);
+        // $('#testOt').text(lat)
+        $('#add-tasks-form').find('input[name="location"]').val(lat+', ' +lng);
+
+
+// **************** add marker *****************
+
+        if (marker && marker.setMap) {
+            marker.setMap(null);
+        }
+        marker = new google.maps.Marker({
+            position: {lat, lng},
+            map: myMap
+        })
+
+
+    })
 };
 
 
+
+// var text = $('#DynamicValueAssignedHere').find('input[name="FirstName"]').val();
 
 
 
