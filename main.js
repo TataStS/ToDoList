@@ -8,7 +8,8 @@ function renderTask (doc){
     let nameTask = $('<span></span>').text(doc.data().name);
     let dateTask = $('<span></span>').text(doc.data().date)
     let descriptionTask = $('<span></span>').text(doc.data().description);
-    let locationTask = $('<span></span>').text(doc.data().location);
+    let locationArray = [doc.data().location.latitude, doc.data().location.longitude];
+    let locationTask = $('<span></span>').text(locationArray);
     let deleteButton = $('<button></button>').text('delete').attr('id', 'del');
     let editButton = $('<button></button>').text('edit').attr('id', 'edit');
     let doneButton = $('<button></button>').text('done').attr('id', 'done')
@@ -37,12 +38,18 @@ $(window).click(function (event) {
 // ********************saving data***********************
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-
+        var taskLocation = form.location.value;
+        var numbers = taskLocation.match(/(\d+\.\d+)|(\d+)/g).map(Number);
+        let lat = numbers[0];
+        let long = numbers[1];
+        let c = new firebase.firestore.GeoPoint(lat, long);
+        // let num1 = numbers.concat(numbers)
+        // console.log(num1)
         db.collection('tasks').add({
             name: form.name.value,
             date: form.date.value,
             description: form.description.value,
-            location: form.location.value,
+            location: c,
             done: false,
             tasks: 'all'
         });
@@ -235,12 +242,15 @@ function initMap() {
         // var a = $('#add-tasks-form').find('input[name="location"]');
 
         console.log(event);
-        // var myLatLng = event.latLng;
-        var lat = event.latLng.lat();
-        var lng = event.latLng.lng();
-        console.log(lat,lng);
-        // $('#testOt').text(lat)
-        $('#add-tasks-form').find('input[name="location"]').val(lat+', ' +lng);
+        var myLatLng = event.latLng;
+        // var lat = event.latLng.lat();
+        // var lng = event.latLng.lng();
+        // let c = new firebase.firestore.GeoPoint(event.latLng.lat(), event.latLng.lng());
+        // console.log(c);
+        // // location:
+        // console.log(lat,lng);
+        // // $('#testOt').text(lat)
+        $('#add-tasks-form').find('input[name="location"]').val(myLatLng);
 
 
 // **************** add marker *****************
@@ -249,17 +259,15 @@ function initMap() {
             marker.setMap(null);
         }
         marker = new google.maps.Marker({
-            position: {lat, lng},
+            position: event.latLng,
             map: myMap
         })
-
-
     })
 };
 
 
 
-// var text = $('#DynamicValueAssignedHere').find('input[name="FirstName"]').val();
+
 
 
 
