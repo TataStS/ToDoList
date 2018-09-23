@@ -10,6 +10,7 @@ function renderTask (doc){
     let descriptionTask = $('<span></span>').text(doc.data().description);
     let locationArray = [doc.data().location.latitude, doc.data().location.longitude];
     let locationTask = $('<span></span>').text(locationArray);
+    let distanceTask = $('<span></span>').text(doc.data().distance);;
     let deleteButton = $('<button></button>').text('delete').attr('id', 'del');
     let editButton = $('<button></button>').text('edit').attr('id', 'edit');
     let doneButton = $('<button></button>').text('done').attr('id', 'done')
@@ -50,6 +51,7 @@ $(window).click(function (event) {
             date: form.date.value,
             description: form.description.value,
             location: c,
+            distance : form.distance.value,
             done: false,
             tasks: 'all'
         });
@@ -138,10 +140,82 @@ $('#tasks-list').on('click', '#done', function (event) {
 
 // **************  SELECTING TASKS *****************
 
+
+
+function calculateDistance(lat1, lon1, lat2, lon2, unit) {
+    var radlat1 = Math.PI * lat1/180
+    var radlat2 = Math.PI * lat2/180
+    var theta = lon1-lon2
+    var radtheta = Math.PI * theta/180
+    var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    if (dist > 1) {
+        dist = 1;
+    }
+    dist = Math.acos(dist)
+    dist = dist * 180/Math.PI
+    dist = dist * 60 * 1.1515
+    if (unit=="K") { dist = dist * 1.609344 }
+    if (unit=="N") { dist = dist * 0.8684 }
+    return dist
+}
+let distanceArray = [];
+function distanceToTask(task, myPosition) {
+    var a = calculateDistance(task.location._lat, task.location._long, myPosition[0].lat, myPosition[0].lng, 'K');
+    distanceArray.push(a)
+    return a
+}
+console.log(distanceArray);
+
+
+    distanceArray.sort(function (a, b) {
+        return (a - b);
+    });
+
+console.log(distanceArray);
+
+// ************** get current location ***********
+
 $("#selectTasks").on('change', function () {
     tasksList.textContent = ('');
     let selectVal = $(this).val();
-    if (selectVal === "overDue"){
+    if(selectVal === "nearMe"){
+        // let user_position = getCurrentPosition();
+        var tasks = [];
+        let distances = [];
+    db.collection('tasks')
+        .get()
+        .then(function (elements) {
+            let elementsDocs = elements.docs;
+            elementsDocs.forEach(function (item) {
+
+            tasks.push(item.data())
+        });
+
+            tasks.forEach(function (task) {
+
+                task.distance_to_me = distanceToTask(task, currentPosition);
+                // console.log(task.distance_to_me);
+
+            });
+
+    });
+
+
+    function compareDistance (taskA, taskB){
+        return taskA.distance_to_me - taskB.distance_to_me
+    }
+    
+
+    tasks.sort(compareDistance);
+    for (var i = 0; i < tasks.length; i++){
+        alert(tasks[i].distance_to_me)
+    }
+
+    console.log(tasks);
+        // tasks.sort((task, other_task) => task.distance_to_me - other_task.distance_to_me);
+        // console.log(tasks)
+    }
+   else if (selectVal === "overDue"){
         db.collection('tasks')
             .get()
             .then(elements => {
@@ -239,22 +313,10 @@ function initMap() {
     // *********** GETTING COORDS BY CLICK ON MAP *********
 
     google.maps.event.addListener(myMap, 'click', function(event) {
-        // var a = $('#add-tasks-form').find('input[name="location"]');
-
         console.log(event);
         var myLatLng = event.latLng;
-        // var lat = event.latLng.lat();
-        // var lng = event.latLng.lng();
-        // let c = new firebase.firestore.GeoPoint(event.latLng.lat(), event.latLng.lng());
-        // console.log(c);
-        // // location:
-        // console.log(lat,lng);
-        // // $('#testOt').text(lat)
         $('#add-tasks-form').find('input[name="location"]').val(myLatLng);
-
-
-// **************** add marker *****************
-
+        // **************** add marker *****************
         if (marker && marker.setMap) {
             marker.setMap(null);
         }
@@ -262,12 +324,40 @@ function initMap() {
             position: event.latLng,
             map: myMap
         })
-    })
+
+        });
 };
 
+var currentPosition = [];
+
+if (navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function (position) {
+        let pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+        };
+        currentPosition.push(pos);
+        console.log(currentPosition);
+
+    })}
+    
+    console.log(currentPosition);
 
 
 
+// function calculateDistance() {
+//    
+// }
 
-
+// var someArr = [];
+// db.collection('tasks')
+//     .get()
+//     .then(function (elements) {
+//         let elementsDocs = elements.docs;
+//         elementsDocs.forEach(function (item) {
+//         console.log(item.data());
+//         someArr.push(item.data())
+//     })
+// console.log(someArr)
+//     })
 
