@@ -181,21 +181,36 @@ $('#selectTasks').on('change', function () {
             tasks.forEach(function (task) {
 
                 task.distance_to_me = distanceToTask(task, currentPosition);
-                var distanceToMe = task.distance_to_me;
-                console.log(distanceToMe);
-
+                // var distanceToMe = task.distance_to_me;
+                // console.log(distanceToMe);
+                // renderTask(task);
             });
+
+            tasks.sort(function (a, b) {
+                return (a.distance_to_me - b.distance_to_me)
+            });
+            console.log(tasks);
+            docsFromFirebase(tasks)
+            // tasks.forEach(function (task) {
+            //     console.log(task);
+            //     renderTask(task)
+            // })
 
     });
 
-    function compareDistance (taskA, taskB){
-        return taskA.distance_to_me - taskB.distance_to_me
-    }
 
-    tasks.sort(compareDistance);
-    for (var i = 0; i < tasks.length; i++){
-        alert(tasks[i].distance_to_me)
-    }
+    function compareDistance (tasks){
+        tasks.sort(function (taskA, taskB) {
+            return taskA.distance_to_me - taskB.distance_to_me;
+            console.log(tasks);
+        })
+    };
+
+    compareDistance(tasks);
+    // tasks.sort(compareDistance);
+    // for (var i = 0; i < tasks.length; i++){
+    //     alert(tasks[i].distance_to_me)
+    // }
 
     console.log(tasks);
         // tasks.sort((task, other_task) => task.distance_to_me - other_task.distance_to_me);
