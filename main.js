@@ -139,9 +139,6 @@ $('#tasks-list').on('click', '#done', function (event) {
 
 
 // **************  SELECTING TASKS *****************
-
-
-
 function calculateDistance(lat1, lon1, lat2, lon2, unit) {
     var radlat1 = Math.PI * lat1/180
     var radlat2 = Math.PI * lat2/180
@@ -154,57 +151,46 @@ function calculateDistance(lat1, lon1, lat2, lon2, unit) {
     dist = Math.acos(dist)
     dist = dist * 180/Math.PI
     dist = dist * 60 * 1.1515
-    if (unit=="K") { dist = dist * 1.609344 }
+    // if (unit=="K") { dist = dist * 1.609344 }
     if (unit=="N") { dist = dist * 0.8684 }
     return dist
 }
-let distanceArray = [];
+
 function distanceToTask(task, myPosition) {
     var a = calculateDistance(task.location._lat, task.location._long, myPosition[0].lat, myPosition[0].lng, 'K');
-    distanceArray.push(a)
+
     return a
 }
-console.log(distanceArray);
+//
+// // ************** get current location ***********
+//
 
-
-    distanceArray.sort(function (a, b) {
-        return (a - b);
-    });
-
-console.log(distanceArray);
-
-// ************** get current location ***********
-
-$("#selectTasks").on('change', function () {
+$('#selectTasks').on('change', function () {
     tasksList.textContent = ('');
     let selectVal = $(this).val();
-    if(selectVal === "nearMe"){
-        // let user_position = getCurrentPosition();
-        var tasks = [];
+    if (selectVal === 'nearMe'){
+                var tasks = [];
         let distances = [];
     db.collection('tasks')
         .get()
         .then(function (elements) {
             let elementsDocs = elements.docs;
             elementsDocs.forEach(function (item) {
-
             tasks.push(item.data())
         });
-
             tasks.forEach(function (task) {
 
                 task.distance_to_me = distanceToTask(task, currentPosition);
-                // console.log(task.distance_to_me);
+                var distanceToMe = task.distance_to_me;
+                console.log(distanceToMe);
 
             });
 
     });
 
-
     function compareDistance (taskA, taskB){
         return taskA.distance_to_me - taskB.distance_to_me
     }
-    
 
     tasks.sort(compareDistance);
     for (var i = 0; i < tasks.length; i++){
@@ -214,24 +200,24 @@ $("#selectTasks").on('change', function () {
     console.log(tasks);
         // tasks.sort((task, other_task) => task.distance_to_me - other_task.distance_to_me);
         // console.log(tasks)
-    }
-   else if (selectVal === "overDue"){
+    } else if (selectVal === 'overDue'){
         db.collection('tasks')
             .get()
-            .then(elements => {
+            .then(elements =>{
                 let elementsDocs = elements.docs;
                 let dateNow = Date.now();
-                elementsDocs.filter(function (item) {
+                elementsDocs.filter(item =>{
                     let itemDate = Math.round(new Date(item.data().date).getTime());
-                    if(dateNow > itemDate){
-                        // console.log(Math.round(new Date(item.data().date).getTime());
-                        renderTask(item);
+                    if (dateNow > itemDate){
+                        renderTask(item)
                     }
                 })
-                }
-            )
+            })
+            .catch(reason => {
+                console.log(reason)
+            })
     } else {
-        db.collection('tasks')
+                db.collection('tasks')
             .orderBy(selectVal)
             .onSnapshot(elements => {
                 let changes = elements.docChanges();
@@ -239,6 +225,75 @@ $("#selectTasks").on('change', function () {
             })
     }
 });
+
+// $("#selectTasks").on('change', function () {
+//     tasksList.textContent = ('');
+//     let selectVal = $(this).val();
+//
+// //     if(selectVal === "nearMe"){
+// //         // let user_position = getCurrentPosition();
+// //         var tasks = [];
+// //         let distances = [];
+// //     db.collection('tasks')
+// //         .get()
+// //         .then(function (elements) {
+// //             let elementsDocs = elements.docs;
+// //             elementsDocs.forEach(function (item) {
+// //             tasks.push(item.data())
+// //         });
+// //             tasks.forEach(function (task) {
+// //                 task.distance_to_me = distanceToTask(task, currentPosition);
+// //                 // console.log(task.distance_to_me);
+// //
+// //             });
+// //
+// //     });
+// //
+// //     function compareDistance (taskA, taskB){
+// //         return taskA.distance_to_me - taskB.distance_to_me
+// //     }
+// //
+// //     tasks.sort(compareDistance);
+// //     for (var i = 0; i < tasks.length; i++){
+// //         alert(tasks[i].distance_to_me)
+// //     }
+// //
+// //     console.log(tasks);
+// //         // tasks.sort((task, other_task) => task.distance_to_me - other_task.distance_to_me);
+// //         // console.log(tasks)
+// //     }
+//    if (selectVal === "overDue"){
+//        db.collection('tasks')
+//            .get()
+//            .then(elements => {
+//                    let elementsDocs = elements.docs;
+//                    console.log(elementsDocs)
+//                    let dateNow = Date.now();
+//                    console.log(dateNow)
+//                    elementsDocs.filter(function (item) {
+//                        let itemDate = Math.round(new Date(item.data().date).getTime());
+//                        console.log(typeof itemDate);
+//                        if(dateNow > itemDate){
+//                            // console.log(Math.round(new Date(item.data().date).getTime());
+//                            renderTask(item);
+//                        }
+//                    })
+//                }
+//
+//            )
+//            .catch(function (reason) {
+//                console.log(reason)
+//            })
+//    }
+// //    else {
+// //         db.collection('tasks')
+// //             .orderBy(selectVal)
+// //             .onSnapshot(elements => {
+// //                 let changes = elements.docChanges();
+// //                 docsFromFirebase(changes);
+// //             })
+// //     }
+// });
 
 // ***************** SEARCH BY NAME *****************
 
@@ -339,9 +394,9 @@ if (navigator.geolocation){
         currentPosition.push(pos);
         console.log(currentPosition);
 
-    })}
+    })};
     
-    console.log(currentPosition);
+    // console.log(currentPosition);
 
 
 
