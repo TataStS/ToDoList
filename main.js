@@ -17,7 +17,6 @@ function renderTask (doc){
     li.append(nameTask, dateTask, descriptionTask, locationTask, deleteButton, editButton, doneButton);
     $('#tasks-list').append(li);
 
-
     if(doc.data().done === true){
         $(li).css("background-color", "#50C878");
     }
@@ -27,6 +26,32 @@ function renderTask (doc){
         $(li).css("background-color", "#DC3D2A");
     }
 }
+
+
+function renderTask2 (doc){
+    let li = $('<li></li>').attr('data-id', doc.id);
+    let nameTask = $('<span></span>').text(doc.name);
+    let dateTask = $('<span></span>').text(doc.date)
+    let descriptionTask = $('<span></span>').text(doc.description);
+    let locationArray = [doc.location.latitude, doc.location.longitude];
+    let locationTask = $('<span></span>').text(locationArray);
+    let distanceTask = $('<span></span>').text(doc.distance);;
+    let deleteButton = $('<button></button>').text('delete').attr('id', 'del');
+    let editButton = $('<button></button>').text('edit').attr('id', 'edit');
+    let doneButton = $('<button></button>').text('done').attr('id', 'done')
+    li.append(nameTask, dateTask, descriptionTask, locationTask, deleteButton, editButton, doneButton);
+    $('#tasks-list').append(li);
+    if(doc.done === true){
+        $(li).css("background-color", "#50C878");
+    }
+
+    let timeFromFB = Math.round(new Date(doc.date).getTime());
+    if (dateNow > +timeFromFB){
+        $(li).css("background-color", "#DC3D2A");
+    }
+}
+
+
 
 // *************open edit modal window************************
 
@@ -98,6 +123,7 @@ $('#tasks-list').on('click', '#edit', function () {
                 description: valueEditDescription.text()
             }
         )
+
     });
 });
 
@@ -112,11 +138,24 @@ $('#tasks-list').on('click', '#del', function (event) {
 
 });
 
+// db.collection('tasks')
+//     .get()
+//     .then(elements => {
+//         let elementsDocs = elements.docs;
+//         docsFromFirebase2(elementsDocs)
+//     });
+
 // ***********************                REAL-TIME SAVER               **************
 db.collection('tasks').orderBy('name').onSnapshot(elements => {
     let changes = elements.docChanges();
     docsFromFirebase(changes);
 });
+
+// function docsFromFirebase2(elements) {
+//     elements.forEach(element =>{
+//         renderTask(element)
+//     })
+// }
 
 function docsFromFirebase(elements){
 
@@ -161,22 +200,24 @@ function distanceToTask(task, myPosition) {
 
     return a
 }
-//
-// // ************** get current location ***********
-//
+
+// ************** get current location ***********
+
 
 $('#selectTasks').on('change', function () {
     tasksList.textContent = ('');
     let selectVal = $(this).val();
     if (selectVal === 'nearMe'){
                 var tasks = [];
-        let distances = [];
+        // let distances = [];
     db.collection('tasks')
         .get()
         .then(function (elements) {
             let elementsDocs = elements.docs;
             elementsDocs.forEach(function (item) {
-            tasks.push(item.data())
+                let task = item.data();
+                task.id = item.id;
+            tasks.push(task);
         });
             tasks.forEach(function (task) {
 
@@ -190,14 +231,13 @@ $('#selectTasks').on('change', function () {
                 return (a.distance_to_me - b.distance_to_me)
             });
             console.log(tasks);
-            docsFromFirebase(tasks)
-            // tasks.forEach(function (task) {
-            //     console.log(task);
-            //     renderTask(task)
-            // })
+            // docsFromFirebase(tasks)
+            tasks.forEach(function (task) {
+                console.log(task);
+                renderTask2(task)
+            })
 
     });
-
 
     function compareDistance (tasks){
         tasks.sort(function (taskA, taskB) {
@@ -207,14 +247,9 @@ $('#selectTasks').on('change', function () {
     };
 
     compareDistance(tasks);
-    // tasks.sort(compareDistance);
-    // for (var i = 0; i < tasks.length; i++){
-    //     alert(tasks[i].distance_to_me)
-    // }
 
     console.log(tasks);
-        // tasks.sort((task, other_task) => task.distance_to_me - other_task.distance_to_me);
-        // console.log(tasks)
+
     } else if (selectVal === 'overDue'){
         db.collection('tasks')
             .get()
@@ -234,81 +269,15 @@ $('#selectTasks').on('change', function () {
     } else {
                 db.collection('tasks')
             .orderBy(selectVal)
-            .onSnapshot(elements => {
-                let changes = elements.docChanges();
-                docsFromFirebase(changes);
+            .get()
+            .then(elements => {
+                let elementsDocs = elements.docs;
+                elementsDocs.forEach(element => {
+                    renderTask(element)
+                })
             })
     }
 });
-
-// $("#selectTasks").on('change', function () {
-//     tasksList.textContent = ('');
-//     let selectVal = $(this).val();
-//
-// //     if(selectVal === "nearMe"){
-// //         // let user_position = getCurrentPosition();
-// //         var tasks = [];
-// //         let distances = [];
-// //     db.collection('tasks')
-// //         .get()
-// //         .then(function (elements) {
-// //             let elementsDocs = elements.docs;
-// //             elementsDocs.forEach(function (item) {
-// //             tasks.push(item.data())
-// //         });
-// //             tasks.forEach(function (task) {
-// //                 task.distance_to_me = distanceToTask(task, currentPosition);
-// //                 // console.log(task.distance_to_me);
-// //
-// //             });
-// //
-// //     });
-// //
-// //     function compareDistance (taskA, taskB){
-// //         return taskA.distance_to_me - taskB.distance_to_me
-// //     }
-// //
-// //     tasks.sort(compareDistance);
-// //     for (var i = 0; i < tasks.length; i++){
-// //         alert(tasks[i].distance_to_me)
-// //     }
-// //
-// //     console.log(tasks);
-// //         // tasks.sort((task, other_task) => task.distance_to_me - other_task.distance_to_me);
-// //         // console.log(tasks)
-// //     }
-//    if (selectVal === "overDue"){
-//        db.collection('tasks')
-//            .get()
-//            .then(elements => {
-//                    let elementsDocs = elements.docs;
-//                    console.log(elementsDocs)
-//                    let dateNow = Date.now();
-//                    console.log(dateNow)
-//                    elementsDocs.filter(function (item) {
-//                        let itemDate = Math.round(new Date(item.data().date).getTime());
-//                        console.log(typeof itemDate);
-//                        if(dateNow > itemDate){
-//                            // console.log(Math.round(new Date(item.data().date).getTime());
-//                            renderTask(item);
-//                        }
-//                    })
-//                }
-//
-//            )
-//            .catch(function (reason) {
-//                console.log(reason)
-//            })
-//    }
-// //    else {
-// //         db.collection('tasks')
-// //             .orderBy(selectVal)
-// //             .onSnapshot(elements => {
-// //                 let changes = elements.docChanges();
-// //                 docsFromFirebase(changes);
-// //             })
-// //     }
-// });
 
 // ***************** SEARCH BY NAME *****************
 
@@ -352,19 +321,6 @@ $("#mapImage").click(function () {
     $("#map").slideToggle();
     // initMap();
 });
-
-
-
-//******************** LOAD MAP *****************
-// var map;
-// function initMap() {
-//     map = new google.maps.Map(document.getElementById('map'), {
-//         center: {lat: 49.84, lng: 24.02},
-//         zoom: 12
-//     });
-// };
-
-
 
 var options = {
     center: {lat: 49.84, lng: 24.02},
@@ -410,24 +366,3 @@ if (navigator.geolocation){
         console.log(currentPosition);
 
     })};
-    
-    // console.log(currentPosition);
-
-
-
-// function calculateDistance() {
-//    
-// }
-
-// var someArr = [];
-// db.collection('tasks')
-//     .get()
-//     .then(function (elements) {
-//         let elementsDocs = elements.docs;
-//         elementsDocs.forEach(function (item) {
-//         console.log(item.data());
-//         someArr.push(item.data())
-//     })
-// console.log(someArr)
-//     })
-
