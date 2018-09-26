@@ -10,7 +10,6 @@ function renderTask (doc){
     let descriptionTask = $('<span></span>').text(doc.data().description);
     let locationArray = [doc.data().location.latitude, doc.data().location.longitude];
     let locationTask = $('<span></span>').text(locationArray);
-    let distanceTask = $('<span></span>').text(doc.data().distance);;
     let deleteButton = $('<button></button>').text('delete').attr('id', 'del');
     let editButton = $('<button></button>').text('edit').attr('id', 'edit');
     let doneButton = $('<button></button>').text('done').attr('id', 'done')
@@ -76,7 +75,6 @@ $(window).click(function (event) {
             date: form.date.value,
             description: form.description.value,
             location: c,
-            distance : form.distance.value,
             done: false,
             tasks: 'all'
         });
@@ -87,6 +85,9 @@ $(window).click(function (event) {
     });
 
 // ****************************edit data and save a new one**********************
+
+
+
 $('#tasks-list').on('click', '#edit', function () {
 
     let savedID = $(this).parent();
@@ -94,6 +95,9 @@ $('#tasks-list').on('click', '#edit', function () {
     let valueEditDate = $(this).parent().children().eq(1);
     let valueEditDescription = $(this).parent().children().eq(2);
     let valueEditLocation = $(this).parent().children().eq(3);
+    let c = valueEditLocation.text();
+    console.log(c);
+
     $('#myModal').show();
     let editName = $('#edit-text');
     let editDate = $('#edit-date');
@@ -114,13 +118,21 @@ $('#tasks-list').on('click', '#edit', function () {
         valueEditName.text(editName.val());
         valueEditDate.text(editDate.val());
         valueEditDescription.text(editDescription.val());
-        valueEditLocation.text(editLocation.val());
+        let q = editLocation.val();
+        valueEditLocation.text(q);
+        console.log(q);
+        var numbers = q.match(/(\d+\.\d+)|(\d+)/g).map(Number);
+        console.log(numbers);
+        let lat = numbers[0];
+        let long = numbers[1];
+        let w = new firebase.firestore.GeoPoint(lat, long);
         let id = savedID.attr('data-id');
         db.collection('tasks').doc(id).update(
             {
                 name: valueEditName.text(),
                 date: valueEditDate.text(),
-                description: valueEditDescription.text()
+                description: valueEditDescription.text(),
+                location: w
             }
         )
 
@@ -138,12 +150,6 @@ $('#tasks-list').on('click', '#del', function (event) {
 
 });
 
-// db.collection('tasks')
-//     .get()
-//     .then(elements => {
-//         let elementsDocs = elements.docs;
-//         docsFromFirebase2(elementsDocs)
-//     });
 
 // ***********************                REAL-TIME SAVER               **************
 db.collection('tasks').orderBy('name').onSnapshot(elements => {
@@ -151,11 +157,6 @@ db.collection('tasks').orderBy('name').onSnapshot(elements => {
     docsFromFirebase(changes);
 });
 
-// function docsFromFirebase2(elements) {
-//     elements.forEach(element =>{
-//         renderTask(element)
-//     })
-// }
 
 function docsFromFirebase(elements){
 
@@ -222,9 +223,7 @@ $('#selectTasks').on('change', function () {
             tasks.forEach(function (task) {
 
                 task.distance_to_me = distanceToTask(task, currentPosition);
-                // var distanceToMe = task.distance_to_me;
-                // console.log(distanceToMe);
-                // renderTask(task);
+
             });
 
             tasks.sort(function (a, b) {
@@ -332,7 +331,7 @@ var markerOptions = {
 };
 var myMap;
 var marker;
-// ******************   new map *************
+    // ******************   ADDING GOOGLE MAP *************
 function initMap() {
     myMap = new google.maps.Map(document.getElementById('map'), options);
 
