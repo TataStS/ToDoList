@@ -54,11 +54,11 @@ function renderTask2 (doc){
 
 // *************open edit modal window************************
 
-$(window).click(function (event) {
-    if (event.target === $('#myModal')){
-        $('#myModal').hide();
+window.onclick = function(event){
+    if (event.target === myModal){
+        myModal.style.display = 'none';
     }
-});
+}
 
 // ********************saving data***********************
     form.addEventListener('submit', (e) => {
