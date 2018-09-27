@@ -12,12 +12,15 @@ function renderTask (doc){
     let locationTask = $('<span></span>').text(locationArray);
     let deleteButton = $('<button></button>').text('delete').attr('id', 'del');
     let editButton = $('<button></button>').text('edit').attr('id', 'edit');
-    let doneButton = $('<button></button>').text('done').attr('id', 'done')
-    li.append(nameTask, dateTask, descriptionTask, locationTask, deleteButton, editButton, doneButton);
+    let doneButton = $('<button></button>').text('done').attr('id', 'done');
+    let unDoneButton = $('<button></button>').text('unDone').attr('id', 'unDone');
+    li.append(nameTask, dateTask, descriptionTask, locationTask, deleteButton, editButton, doneButton, unDoneButton);
     $('#tasks-list').append(li);
 
     if(doc.data().done === true){
         $(li).css("background-color", "#50C878");
+    } else {
+        $(li).css("background-color", "#f6f6f6");
     }
 
     let timeFromFB = Math.round(new Date(doc.data().date).getTime());
@@ -25,7 +28,6 @@ function renderTask (doc){
         $(li).css("background-color", "#DC3D2A");
     }
 }
-
 
 function renderTask2 (doc){
     let li = $('<li></li>').attr('data-id', doc.id);
@@ -50,15 +52,13 @@ function renderTask2 (doc){
     }
 }
 
-
-
 // *************open edit modal window************************
 
 window.onclick = function(event){
     if (event.target === myModal){
         myModal.style.display = 'none';
     }
-}
+};
 
 // ********************saving data***********************
     form.addEventListener('submit', (e) => {
@@ -86,11 +86,10 @@ window.onclick = function(event){
 
 // ****************************edit data and save a new one**********************
 
-
-
 $('#tasks-list').on('click', '#edit', function () {
 
     let savedID = $(this).parent();
+    let li = $(this).parent();
     let valueEditName = $(this).parent().children().first();
     let valueEditDate = $(this).parent().children().eq(1);
     let valueEditDescription = $(this).parent().children().eq(2);
@@ -127,6 +126,7 @@ $('#tasks-list').on('click', '#edit', function () {
         let long = numbers[1];
         let w = new firebase.firestore.GeoPoint(lat, long);
         let id = savedID.attr('data-id');
+
         db.collection('tasks').doc(id).update(
             {
                 name: valueEditName.text(),
@@ -139,7 +139,6 @@ $('#tasks-list').on('click', '#edit', function () {
     });
 });
 
-
 //*****************************deleting data*******************
 
 $('#tasks-list').on('click', '#del', function (event) {
@@ -150,13 +149,11 @@ $('#tasks-list').on('click', '#del', function (event) {
 
 });
 
-
 // ***********************                REAL-TIME SAVER               **************
 db.collection('tasks').orderBy('name').onSnapshot(elements => {
     let changes = elements.docChanges();
     docsFromFirebase(changes);
 });
-
 
 function docsFromFirebase(elements){
 
@@ -177,6 +174,15 @@ $('#tasks-list').on('click', '#done', function (event) {
         });
 });
 
+$('#tasks-list').on('click', '#unDone', function (event) {
+    let li = $(event.target).parent();
+    let id = li.attr('data-id');
+    let liId = $(event.target).parent().attr('data-id');
+    $(li).css("background-color", "#f6f6f6");
+    db.collection('tasks').doc(id).update({
+        done: false
+    });
+});
 
 // **************  SELECTING TASKS *****************
 function calculateDistance(lat1, lon1, lat2, lon2, unit) {
@@ -192,7 +198,7 @@ function calculateDistance(lat1, lon1, lat2, lon2, unit) {
     dist = dist * 180/Math.PI
     dist = dist * 60 * 1.1515
     // if (unit=="K") { dist = dist * 1.609344 }
-    if (unit=="N") { dist = dist * 0.8684 }
+    if (unit==="N") { dist = dist * 0.8684 }
     return dist
 }
 
@@ -203,7 +209,6 @@ function distanceToTask(task, myPosition) {
 }
 
 // ************** get current location ***********
-
 
 $('#selectTasks').on('change', function () {
     tasksList.textContent = ('');
@@ -318,7 +323,6 @@ $(".dateSearch").on('input', function () {
 
 $("#mapImage").click(function () {
     $("#map").slideToggle();
-    // initMap();
 });
 
 var options = {
@@ -365,3 +369,8 @@ if (navigator.geolocation){
         console.log(currentPosition);
 
     })};
+
+$('.search').dblclick(function () {
+    console.log('working');
+    $('.search').val('');
+});
