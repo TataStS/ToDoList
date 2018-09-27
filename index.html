@@ -20,7 +20,7 @@
             <input id="text" required  type="text" name="name" placeholder="name"><br>
             <input type="datetime-local" required  name="date" value="2018-09-24T20:36:00" step="1" placeholder="date"><br>
             <textarea name="description" placeholder="description"></textarea><br>
-            <input type="text" name="location" placeholder="location"><br>
+            <input type="text" required name="location" placeholder="location"><br>
             <img src="images/map128.png" alt="map" id="mapImage">
             <button id="addTask">add new task</button>
         </form>
@@ -35,9 +35,6 @@
                 <option value="name">Name</option>
                 <option value="date">Date</option>
                 <option value="overDue">Over Due</option>
-                <option value="nearMe">Near Me</option>
-                <!--<option id='alfa' value="Alphabet">Alphabet</option>-->
-                <!--<option value="Near Me">Near Me</option>-->
             </select>
         </p>
         <input type="text" class="search" value="" placeholder="Search by name">
@@ -59,10 +56,12 @@
             <input id="edit-text" required  type="text" name="name" placeholder="name"><br>
             <input id="edit-date" type="datetime-local"  required  name="date"  placeholder="date"><br>
             <textarea id="edit-description" name="description" placeholder="description"></textarea><br>
-            <img src="images/map128.png" alt="map" id="mapImageEdit">
+            <input id="edit-location" type="text" required name="location" placeholder="location"><br>
             <button id="save">save</button>
             <br>
         </form>
+        <div id="mapInEditWindow" class="mapEdit">
+        </div>
     </div>
 </div>
 
